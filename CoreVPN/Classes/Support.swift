@@ -9,7 +9,7 @@ import Foundation
 import NetworkExtension
 import PlainPing
 
-enum CoreVPNConnectionState {
+public enum CoreVPNConnectionState {
     case connected
     case connecting
     case disconnected
@@ -17,7 +17,7 @@ enum CoreVPNConnectionState {
     case error
 }
 
-internal class CoreVPNSupport {
+class CoreVPNSupport {
     
     private var servers: [CoreVPNServerModel]
     private var vpnProtocol: CoreVPNProtocol

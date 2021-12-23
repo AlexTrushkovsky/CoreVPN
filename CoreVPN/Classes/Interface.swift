@@ -14,7 +14,7 @@ enum CoreVPNProtocol {
 //    case OpenVPN
 }
 
-struct CoreVPNServerModel {
+public struct CoreVPNServerModel {
     var ip: String
     var userName: String
     var password: String
@@ -22,7 +22,7 @@ struct CoreVPNServerModel {
     var l2tpPSK: String?
 }
 
-class CoreVPN {
+public final class CoreVPN {
     private var support: CoreVPNSupport
     private var service: CoreVPNService
     
