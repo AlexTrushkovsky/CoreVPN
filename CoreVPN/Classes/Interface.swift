@@ -8,7 +8,7 @@
 import Foundation
 import NetworkExtension
 
-enum CoreVPNProtocol {
+public enum CoreVPNProtocol {
     case IKEv2
     case L2TP
 //    case OpenVPN
