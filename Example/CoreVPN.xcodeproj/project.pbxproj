@@ -201,10 +201,12 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-CoreVPN_Tests/Pods-CoreVPN_Tests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/CoreVPN/CoreVPN.framework",
+				"${BUILT_PRODUCTS_DIR}/PlainPing/PlainPing.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/CoreVPN.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PlainPing.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;

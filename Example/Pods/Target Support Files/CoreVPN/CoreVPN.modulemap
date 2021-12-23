@@ -1,0 +1,6 @@
+framework module CoreVPN {
+  umbrella header "CoreVPN-umbrella.h"
+
+  export *
+  module * { export * }
+}
