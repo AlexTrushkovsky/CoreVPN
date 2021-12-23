@@ -20,6 +20,14 @@ public struct CoreVPNServerModel {
     var password: String
     var ikev2ID: String?
     var l2tpPSK: String?
+    
+    public init(ip: String, userName: String, password: String, ikev2ID: String?, l2tpPSK: String?) {
+        self.ip = ip
+        self.userName = userName
+        self.password = password
+        self.ikev2ID = ikev2ID
+        self.l2tpPSK = l2tpPSK
+    }
 }
 
 public final class CoreVPN {
