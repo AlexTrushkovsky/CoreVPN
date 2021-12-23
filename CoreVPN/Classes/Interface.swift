@@ -34,7 +34,7 @@ public final class CoreVPN {
     
     private var timer = Timer()
     
-    required init(vpnProtocol: CoreVPNProtocol, serviceName: String, servers: [CoreVPNServerModel]) {
+    public required init(vpnProtocol: CoreVPNProtocol, serviceName: String, servers: [CoreVPNServerModel]) {
         self.servers = servers
         self.support = CoreVPNSupport(vpnProtocol: vpnProtocol, servers: servers)
         self.connectionState = support.getConnectionStatus()
