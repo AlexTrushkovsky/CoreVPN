@@ -10,7 +10,7 @@ Then add next capability`s to your app target:
 ```
 import CoreVPN
 
-`class ViewController: UIViewController {
+class ViewController: UIViewController {
    var corevpn: CoreVPN!
     
     override func viewDidLoad() {
@@ -40,7 +40,9 @@ import CoreVPN
         }
     }
 }
-
+```
+And Delegate methods
+```
 extension ViewController: CoreVPNDelegate {
     func serverChanged(server: CoreVPNServerModel) {
         // update view or make smth you need
