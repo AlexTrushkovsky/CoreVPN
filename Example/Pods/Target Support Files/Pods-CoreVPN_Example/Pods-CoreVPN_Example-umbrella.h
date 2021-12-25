@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double Pods_CoreVPN_TestsVersionNumber;
-FOUNDATION_EXPORT const unsigned char Pods_CoreVPN_TestsVersionString[];
+FOUNDATION_EXPORT double Pods_CoreVPN_ExampleVersionNumber;
+FOUNDATION_EXPORT const unsigned char Pods_CoreVPN_ExampleVersionString[];
 

@@ -14,52 +14,52 @@ public enum CoreVPNConnectionState {
     case connecting
     case disconnected
     case disconnecting
-    case error
 }
 
 class CoreVPNSupport {
     
     private var servers: [CoreVPNServerModel]
-    private var vpnProtocol: CoreVPNProtocol
-    required init(vpnProtocol: CoreVPNProtocol, servers: [CoreVPNServerModel]) {
+    required init(servers: [CoreVPNServerModel]) {
         self.servers = servers
-        self.vpnProtocol = vpnProtocol
     }
     
     
     func getConnectionStatus() -> CoreVPNConnectionState {
         let status = NEVPNManager.shared().connection.status
         switch status {
-        case NEVPNStatus.invalid:
-            return .error
-        case NEVPNStatus.disconnected:
+        case NEVPNStatus.invalid, NEVPNStatus.disconnected, NEVPNStatus.reasserting:
             return .disconnected
         case NEVPNStatus.connecting:
             return .connecting
         case NEVPNStatus.connected:
             return .connected
-        case NEVPNStatus.reasserting:
-            return .error
         case NEVPNStatus.disconnecting:
-            return .disconnected
+            return .disconnecting
         @unknown default:
-            return .error
+            return .disconnected
         }
     }
     
     
     func selectServer(server: CoreVPNServerModel) {
+        UserDefaults.standard.setValue(server.vpnProtocol, forKey: "coreVpnProtocol")
         UserDefaults.standard.setValue(server.userName, forKey: "coreVpnUsername")
         UserDefaults.standard.setValue(server.ip, forKey: "coreVpnServer")
         UserDefaults.standard.setValue(server.password, forKey: "coreVpnPass")
-        if self.vpnProtocol == .L2TP {
+        if server.vpnProtocol == "l2tp" {
             UserDefaults.standard.setValue(server.l2tpPSK, forKey: "coreVpnPSK")
-        } else if self.vpnProtocol == .IKEv2 {
+        } else if server.vpnProtocol == "ikev2" {
             UserDefaults.standard.setValue(server.ikev2ID, forKey: "coreVpnID")
+        }
+        if let imagelink = server.locationImageLink {
+            UserDefaults.standard.setValue(imagelink, forKey: "coreVpnImageLink")
+        }
+        if let locationName = server.locationName {
+            UserDefaults.standard.setValue(locationName, forKey: "coreVpnLocationName")
         }
     }
     
-    func selectOptimalServer() {
+    func getOptimalServer(completion: @escaping ((CoreVPNServerModel) -> ())) {
         getPingList { result in
             var optimalPing = 9999.9
             for item in result {
@@ -69,30 +69,84 @@ class CoreVPNSupport {
             }
             
             if let ping = result.first(where: { $0.value == optimalPing }) {
-                if let index = servers.firstIndex(where: { $0.ip == ping.key }) {
-                    self.selectServer(server: servers[index])
-                } else {
-                    if let server = servers.first {
-                        self.selectServer(server: server)
-                    }
+                if let index = self.servers.firstIndex(where: { $0.ip == ping.key }) {
+                    completion(self.servers[index])
                 }
             }
-            
+            if let server = self.servers.first {
+                completion(server)
+            }
         }
     }
     
-    func getPingList(completion: ([String: Double]) -> ()) {
+    func getSelectedServer() -> CoreVPNServerModel? {
+        let coreVpnProtocol = UserDefaults.standard.string(forKey: "coreVpnProtocol")
+        let coreVpnUsername = UserDefaults.standard.string(forKey: "coreVpnUsername")
+        let coreVpnServer = UserDefaults.standard.string(forKey: "coreVpnServer")
+        let coreVpnPass = UserDefaults.standard.string(forKey: "coreVpnPass")
+        let coreVpnPSK = UserDefaults.standard.string(forKey: "coreVpnPSK")
+        let coreVpnID = UserDefaults.standard.string(forKey: "coreVpnID")
+        let coreVpnImageLink = UserDefaults.standard.string(forKey: "coreVpnImageLink")
+        let coreVpnLocationName = UserDefaults.standard.string(forKey: "coreVpnLocationName")
+        if let coreVpnServer = coreVpnServer,
+           let coreVpnUsername = coreVpnUsername,
+           let coreVpnPass = coreVpnPass,
+           let coreVpnProtocol = coreVpnProtocol {
+        return CoreVPNServerModel(ip: coreVpnServer, userName: coreVpnUsername, password: coreVpnPass, locationName: coreVpnLocationName, locationImageLink: coreVpnImageLink, ikev2ID: coreVpnID, l2tpPSK: coreVpnPSK, vpnProtocol: coreVpnProtocol)
+        } else {
+            return nil
+        }
+    }
+    
+//    func getPingList(completion: @escaping ([String: Double]) -> ()) {
+//        var pingList = [String: Double]()
+//        var serverList = servers
+//        var semaphore = serverList.count {
+//            didSet {
+//                if semaphore == 0 {
+//                    print(self.servers.count)
+//                    completion(pingList)
+//                }
+//            }
+//        }
+//        let myGroup = DispatchGroup()
+//        while serverList.count != 0 {
+//            let server = serverList.removeFirst().ip
+//            myGroup.enter()
+//            self.ping(server: server) { ping in
+//                pingList[server] = ping
+//                print("\(server): \(ping)")
+//                myGroup.leave()
+//            }
+//        }
+//
+//        myGroup.notify(queue: .main) {
+//            print("Finished all requests.")
+//        }
+//
+//    }
+    
+    
+    func getPingList(completion: @escaping (([String: Double]) -> ())) {
         var pingList = [String: Double]()
         var serverList = servers
+        pingNext()
         
-        while serverList.count != 0 {
+        func pingNext() {
+            guard serverList.count > 0 else {
+                completion(pingList)
+                return
+            }
+            
             let server = serverList.removeFirst().ip
-            self.ping(server: server) { ping in
-                pingList[server] = ping
+            PlainPing.ping(server) { elapsedTimeMs, error in
+                pingList[server] = elapsedTimeMs
+                pingNext()
             }
         }
-        completion(pingList)
+        
     }
+    
     
     func offsetFrom(date: Date) -> String {
         let dayHourMinuteSecond: Set<Calendar.Component> = [.day, .hour, .minute, .second]
@@ -112,6 +166,17 @@ class CoreVPNSupport {
             seconds = "0\(seconds)"
         }
         return hours + ":" + minutes + ":" + seconds
+    }
+    
+    func isServerPicked() -> Bool {
+        if UserDefaults.standard.string(forKey: "coreVpnUsername") != nil,
+           UserDefaults.standard.string(forKey: "coreVpnServer") != nil,
+           UserDefaults.standard.string(forKey: "coreVpnPass") != nil
+        {
+            return true
+        } else {
+            return false
+        }
     }
  
     private func ping(server: String, completion: @escaping (Double?) -> ()) {

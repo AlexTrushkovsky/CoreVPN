@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CoreVPN'
-  s.version          = '1.0.5'
+  s.version          = '1.0.6'
   s.summary          = 'Easy VPN connection.'
 
 # This description is used to generate tags and improve search results.

@@ -9,11 +9,9 @@ import Foundation
 import NetworkExtension
 
 class CoreVPNService {
-    private var vpnProtocol: CoreVPNProtocol
     private var serviceName: String
     
-    required init(vpnProtocol: CoreVPNProtocol, serviceName: String) {
-        self.vpnProtocol = vpnProtocol
+    required init(serviceName: String) {
         self.serviceName = serviceName
     }
     
@@ -27,13 +25,13 @@ class CoreVPNService {
             }
             
             let kcs = KeychainService(serviceName: self.serviceName)
-            
-            if self.vpnProtocol == .IKEv2 {
+            let vpnProtocol = UserDefaults.standard.string(forKey: "coreVpnProtocol") ?? "ikev2"
+            if vpnProtocol == "ikev2" {
                 let protocolIKEv2 = NEVPNProtocolIKEv2()
                 kcs.save(key: "coreVpnPass", value: UserDefaults.standard.string(forKey: "coreVpnPass") ?? "")
                 protocolIKEv2.passwordReference = kcs.load(key: "coreVpnPass")
                 protocolIKEv2.username = UserDefaults.standard.string(forKey: "coreVpnUsername")
-                protocolIKEv2.serverAddress = UserDefaults.standard.string(forKey: "coreVpnIP")
+                protocolIKEv2.serverAddress = UserDefaults.standard.string(forKey: "coreVpnServer")
                 protocolIKEv2.remoteIdentifier = UserDefaults.standard.string(forKey: "coreVpnID")
                 protocolIKEv2.localIdentifier = UserDefaults.standard.string(forKey: "coreVpnID")
                 protocolIKEv2.useExtendedAuthentication = true
@@ -56,10 +54,10 @@ class CoreVPNService {
                 self.vpnManager.localizedDescription = self.serviceName
                 self.vpnManager.isEnabled = true
                 self.vpnManager.saveToPreferences(completionHandler: self.vpnSaveHandler)
-            } else if self.vpnProtocol == .L2TP {
+            } else if vpnProtocol == "l2tp" {
                 let protocolL2TP = NEVPNProtocolIPSec()
                 protocolL2TP.username = UserDefaults.standard.string(forKey: "coreVpnUsername")
-                protocolL2TP.serverAddress = UserDefaults.standard.string(forKey: "coreVpnIP")
+                protocolL2TP.serverAddress = UserDefaults.standard.string(forKey: "coreVpnServer")
                 protocolL2TP.authenticationMethod = NEVPNIKEAuthenticationMethod.sharedSecret
                 kcs.save(key: "coreVpnPSK", value: UserDefaults.standard.string(forKey: "coreVpnPSK") ?? "")
                 kcs.save(key: "coreVpnPass", value: UserDefaults.standard.string(forKey: "coreVpnPass") ?? "")

@@ -1,5 +1,5 @@
 PODS:
-  - CoreVPN (0.1.0):
+  - CoreVPN (1.0.5):
     - PlainPing
   - PlainPing (0.5.2)
 
@@ -15,9 +15,9 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  CoreVPN: bb5164f9963e44f1e89f4055dae1a0899e314ac5
+  CoreVPN: 396ce7c2d20a33ae6f0f69b755bc87b8bfad2afa
   PlainPing: 41fb93099deb2f5ddbc534a934eb3bf07522d437
 
-PODFILE CHECKSUM: 7b4f677855965a0b2b0e99b6bad6b2e13fba873d
+PODFILE CHECKSUM: eb0bc56c8c022a53b54215b0998b3916188a4273
 
 COCOAPODS: 1.11.2

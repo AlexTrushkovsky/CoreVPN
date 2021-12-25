@@ -1,5 +1,5 @@
 use_frameworks!
-target 'CoreVPN_Tests' do
+target 'CoreVPN_Example' do
   pod 'CoreVPN', :path => '../'
   
   

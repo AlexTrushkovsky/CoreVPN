@@ -1,9 +1,9 @@
 {
   "name": "CoreVPN",
-  "version": "0.1.0",
-  "summary": "A short description of CoreVPN.",
-  "description": "TODO: Add long description of the pod here.",
-  "homepage": "https://github.com/Alexey Trushkovsky/CoreVPN",
+  "version": "1.0.5",
+  "summary": "Easy VPN connection.",
+  "description": "Easy VPN connection with IKEv2, L2TP protocols support\nwith optimal server selection based on ping.",
+  "homepage": "https://github.com/AlexTrushkovsky/CoreVPN",
   "license": {
     "type": "MIT",
     "file": "LICENSE"
@@ -12,16 +12,18 @@
     "Alexey Trushkovsky": "trushkovskya@gmail.com"
   },
   "source": {
-    "git": "https://github.com/Alexey Trushkovsky/CoreVPN.git",
-    "tag": "0.1.0"
+    "git": "https://github.com/AlexTrushkovsky/CoreVPN.git",
+    "tag": "1.0.5"
   },
   "platforms": {
     "ios": "9.0"
   },
+  "swift_versions": "5.1",
   "source_files": "CoreVPN/Classes/**/*",
   "dependencies": {
     "PlainPing": [
 
     ]
-  }
+  },
+  "swift_version": "5.1"
 }
