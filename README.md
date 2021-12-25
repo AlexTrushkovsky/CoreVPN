@@ -7,8 +7,7 @@ Then add next capability`s to your app target:
     - Personal VPN
     - Network Extensions (Packet Tunnel, App Proxy)
     
-    
-import CoreVPN
+`import CoreVPN
 
 class ViewController: UIViewController {
    var corevpn: CoreVPN!
@@ -53,7 +52,7 @@ extension ViewController: CoreVPNDelegate {
     func connectionStateChanged(state: CoreVPNConnectionState) {
         // update view or make smth you need
     }
-}
+}`
 
 ## Requirements
 iOS >= 9.0
