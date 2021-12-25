@@ -6,10 +6,11 @@ To run the example project, clone the repo, and run `pod install`.
 Then add next capability`s to your app target:
     - Personal VPN
     - Network Extensions (Packet Tunnel, App Proxy)
-    
-`import CoreVPN
+   
+```
+import CoreVPN
 
-class ViewController: UIViewController {
+`class ViewController: UIViewController {
    var corevpn: CoreVPN!
     
     override func viewDidLoad() {
@@ -52,7 +53,8 @@ extension ViewController: CoreVPNDelegate {
     func connectionStateChanged(state: CoreVPNConnectionState) {
         // update view or make smth you need
     }
-}`
+}
+```
 
 ## Requirements
 iOS >= 9.0
